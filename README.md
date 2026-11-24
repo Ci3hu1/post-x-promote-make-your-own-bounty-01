@@ -1,8 +1,8 @@
 # post-x-promote-make-your-own-bounty-01
 
-[![make.fun bounty](https://img.shields.io/badge/make.fun-post--x--promote--make--your--own--bounty--01-blue)](https://make.fun/bounty/post-x-promote-make-your-own-bounty-01)
-[![repo](https://img.shields.io/badge/repo-Ci3hu1%2Fpost--x--promote--make--your--own--bounty--01-green)](https://github.com/Ci3hu1/post-x-promote-make-your-own-bounty-01)
-[![prize](https://img.shields.io/badge/prize-%24250-gold)](https://make.fun/bounty/post-x-promote-make-your-own-bounty-01)
+[![make.fun · post-x-promote-make-your-own-bounty-01](https://make.fun/badge/post-x-promote-make-your-own-bounty-01.svg)](https://make.fun/bounty/post-x-promote-make-your-own-bounty-01?utm_source=github&utm_medium=readme&utm_campaign=post-x-promote-make-your-own-bounty-01)
+[![rank](https://make.fun/badge/post-x-promote-make-your-own-bounty-01/Ci3hu1/post-x-promote-make-your-own-bounty-01/rank.svg)](https://make.fun/bounty/post-x-promote-make-your-own-bounty-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=post-x-promote-make-your-own-bounty-01)
+[![reward](https://make.fun/badge/post-x-promote-make-your-own-bounty-01/Ci3hu1/post-x-promote-make-your-own-bounty-01/reward.svg)](https://make.fun/bounty/post-x-promote-make-your-own-bounty-01?utm_source=github&utm_medium=readme&utm_campaign=post-x-promote-make-your-own-bounty-01)
 
 One X post promoting **Make Your Own Bounty** on [make.fun](https://make.fun/bounty/post-x-promote-make-your-own-bounty-01) — free entry, $250 prize pool (1st $50, 2nd $30, 3rd $15, 4th–10th $5, 11th–50th $3).
 
