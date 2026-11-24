@@ -1,38 +1,57 @@
-# NOTES — post-x-promote-make-your-own-bounty-01
+# Build log — post-x-promote-make-your-own-bounty-01
 
-## Entry
+## 24 Nov 2026 — v1 rewrite (fresh composition)
 
-- Competition: Promote make.fun's make-your-own-bounty post on X ($250: 1st $50, 2nd $30, 3rd $15, 4th–10th $5, 11th–50th $3), free entry.
-- Opens 23 Nov 2026 18:35 UTC, closes 26 Nov 2026 18:35 UTC (27 Nov 01:35 WIB). Result due 11 Dec 2026.
-- The entry is ONE X post (quote of https://x.com/makefunai/status/2124915864336236646, photo attached, @makefunai + play code cc7tcnw6 in the text). Places rank on replies + reposts + quotes; views/likes move nothing.
-- Program: `main.ts` (Node 22, stdlib only) copies `POST.json` to `/output`. Deterministic, no network.
-- Prerequisite: a public X account that can post a photo. Muse NEVER touches Joni's X — Joni posts by hand (see below).
+Rewrote the whole entry from scratch as my own composition, from the
+bounty facts only. I did not read, copy, or re-type any of the previous
+entry files (main.ts, tests, STRATEGY.md, NOTES.md, README.md, POST.json,
+package.json, .gitignore). LICENSE and .makefun/freshness.json were left
+untouched; post-photo.png and media-generation-post-photo-1795462270.json
+were left alone.
 
-## Field
+### What was written
 
-- Only **1 submission** when found (24 Nov ~02:25 WIB) — 50 paid places, field nearly empty.
-- Quota at triage: total max 1, day cap 1 left, can_submit true, entries_made 0.
+- `main.ts` — Node 22+, stdlib only. Copies `POST.json` byte-for-byte to
+  the grader location: `$MAKEFUN_OUTPUT_DIR/entry.json` when that variable
+  is set, `/output/POST.json` when `/output` exists as a directory,
+  otherwise `./output.json` in the working directory. Sets mode 0644 and
+  exits non-zero with the reason on stderr on any failure.
+- `POST.json` — `{"url": "https://x.com/ci3hu1/status/2124952049179890172"}`,
+  the live post by @ci3hu1 quoting @makefunai, with the robot photo.
+- `tests/test_main.mjs` — `node --test` suite: POST.json shape (URL must
+  start with `https://x.com/`), byte-exact copy with mode 0644 under
+  `$MAKEFUN_OUTPUT_DIR`, determinism across repeat runs, fallback
+  destination when no output dir is set, non-zero exit when POST.json
+  is missing.
+- `STRATEGY.md` — promotion strategy: quote the make.fun post, robot
+  photo, @makefunai twice, play code cc7tcnw6, link make.fun/sponsor/new;
+  ranking is on replies + reposts + quotes only.
+- `README.md` — three live badges (bounty, repo, prize), bounty link,
+  referral code cc7tcnw6, the live post, and how the entry is graded.
+- `package.json` — name post-x-promote-make-your-own-bounty-01, type
+  module, `npm test` runs `node --test tests/test_main.mjs`.
+- `.gitignore` — node_modules, output, output.json, logs.
 
-## X post draft (for Joni to post by hand)
+### Tests
 
-Quote make.fun's post, attach `post-photo.png`, text:
+24 Nov 2026, Node v24.22.1, `npm test`: **5 passed, 0 failed**.
+One fix during the run: the fallback test first assumed `./output.json`,
+but `/output` exists as a directory on this machine, so the code
+correctly used `/output/POST.json` — the test was corrected to follow
+the documented destination priority, not the code.
 
-> My AI agent wins bounties on @makefunai and gets paid in USDC. Now anyone can post their own bounty — set the task, set the reward, keep a share of every entry fee.
->
-> Make your own bounty on @makefunai: https://make.fun/sponsor/new
-> Play code: cc7tcnw6
+### Bounty facts (for the record)
 
-## Build
+- Bounty: https://make.fun/bounty/post-x-promote-make-your-own-bounty-01
+  ($250: 1st $50, 2nd $30, 3rd $15, 4th–10th $5, 11th–50th $3; free entry)
+- Live post: https://x.com/ci3hu1/status/2124952049179890172
+- Quoted post: https://x.com/makefunai/status/2124915864336236646
+- Play code: cc7tcnw6 — https://make.fun/sponsor/new
+- Entries close 26 Nov 2026 18:35 UTC; results 11 Dec 2026.
+- Ranking: replies + reposts + quotes; views/likes move nothing.
 
-- Built 24 Nov ~02:30 WIB in this run's session (started after opening).
-- `main.ts`, `POST.json` (PLACEHOLDER `https://x.com/ci3hu1/status/0` — MUST be replaced with the real post URL after Joni posts), `STRATEGY.md`, `tests/test_main.mjs`, `README.md` (template badges, owner/repo/referral filled), `NOTES.md`, `LICENSE` (MIT), `post-photo.png` written in the build session.
-- Tests: `node --test tests/test_main.mjs` — all pass (copy exact, 0644 mode, determinism, POST.json shape).
-- Repo: https://github.com/Ci3hu1/post-x-promote-make-your-own-bounty-01 — commit pending (see below).
-- Kit check / bundle: PENDING — run in the follow-up turn after Joni posts on X + gives his Setuju (usage rows land only when this build turn ends; bundle needs --prompt-file + --mcp none). Kit `init` (anchor + .makefun/owner.json) also runs there if the kit requires it.
-- NOT submitted — blocked on two things: (1) Joni's 'Setuju' on the exact entry, (2) the real X post URL to replace the POST.json placeholder.
+### Status
 
-## Next steps (in order)
-
-1. Joni posts the X post by hand (quote + photo + text above) and sends back the post URL.
-2. Replace the POST.json placeholder with the real URL, commit + push.
-3. Follow-up turn: kit download/init, bundle + check until pass, report exact entry for Setuju, submit.
+- v1 committed and pushed to origin main (see git log).
+- NOT submitted — submission needs Joni's explicit approval of the
+  exact entry, per standing rules.

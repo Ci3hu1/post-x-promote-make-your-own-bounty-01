@@ -1,65 +1,65 @@
-# STRATEGY — Promote make.fun's make-your-own-bounty post on X
+# Strategy — Promote Make Your Own Bounty on X
 
-## The entry
+## The bounty in one line
 
-The entry is one X post, not code. The post quotes make.fun's post
-https://x.com/makefunai/status/2124915864336236646, carries a photo of
-its own, names make.fun / @makefunai, and carries the play code
-`cc7tcnw6`. Places go by replies + reposts + quotes — views and likes
-move nothing — and the top 50 share $250 (1st $50, 2nd $30, 3rd $15,
-4th–10th $5, 11th–50th $3).
+Get people to try making their own bounty on make.fun, using a single X
+post. Prize pool $250: 1st $50, 2nd $30, 3rd $15, 4th–10th $5, 11th–50th $3.
+Free entry. Entries close 26 Nov 2026 18:35 UTC; results 11 Dec 2026.
 
-## The post (draft for Joni to post by hand)
+Bounty page: https://make.fun/bounty/post-x-promote-make-your-own-bounty-01
 
-Muse never touches Joni's X account — Joni posts this himself as a
-quote of make.fun's post, with the photo `post-photo.png` attached:
+## What actually ranks
 
-> My AI agent wins bounties on @makefunai and gets paid in USDC. Now
-> anyone can post their own bounty — set the task, set the reward, keep
-> a share of every entry fee.
->
-> Make your own bounty on @makefunai: https://make.fun/sponsor/new
-> Play code: cc7tcnw6
+Places rank on **replies + reposts + quotes only**. Views and likes do not
+move the score. So the post is not optimised for impressions — it is
+optimised for a response: something a reader can answer, argue with, or
+pass on with their own take attached.
 
-Why this text:
+## The post
 
-1. **It is a real testimonial, not an ad.** "My AI agent wins bounties
-   and gets paid" is Joni's own true story — the account behind the post
-   actually does this. Testimonials earn replies; ads earn scrolls.
-2. **It explains the new thing in one line.** "Set the task, set the
-   reward, keep a share of every entry fee" is the whole sponsor model
-   in twelve words — the reader learns why the link matters before
-   clicking it.
-3. **The required line is verbatim.** "Make your own bounty on
-   @makefunai: https://make.fun/sponsor/new" carries both make.fun and
-   the @makefunai tag in one line, exactly as the brief suggests.
-4. **The play code is on its own line.** It is visible at a glance and
-   copyable, which is what a referral code needs to be.
+Live post: https://x.com/ci3hu1/status/2124952049179890172 (posted by Joni).
 
-## Why this bounty is worth entering
+Its working parts, each there for a reason:
 
-Only **1 submission** existed when the bounty was found (24 Nov ~02:25
-WIB), against 50 paid places. A valid post with even modest engagement
-has a real shot at a paid place — the field is nearly empty. The risk
-is engagement: places rank on replies + reposts + quotes, so the post
-needs conversation, not just views. The quote format + a concrete
-testimonial + the photo give it the best chance of earning replies.
+1. **Quote, don't just link.** The post quotes make.fun's own announcement
+   (https://x.com/makefunai/status/2124915864336236646) instead of posting
+   a bare link. A quote carries the original context into the reader's
+   feed and gives the post a conversation to join, which is what earns
+   replies and quote-reposts.
+2. **A robot photo attached.** The visual is the hook in the timeline: a
+   robot image stops the scroll and signals "agents / builders" at a
+   glance, before a single word is read. The photo is part of the post,
+   not an afterthought.
+3. **`@makefunai` mentioned twice.** Two mentions keep the post inside
+   make.fun's own conversation and make it findable from the project's
+   account, so people already following the project are the ones most
+   likely to see it, reply, and repost.
+4. **Play code `cc7tcnw6` in the open.** The code is the measurable call
+   to action: a reader who tries it is a reader who actually went to
+   make.fun, not just someone who scrolled past. It also ties the post
+   to Joni's account, so any sign-up through it is attributable.
+5. **A direct next step: make.fun/sponsor/new.** One link, one action —
+   make your own bounty. No thread, no extra links competing for the
+   click, no instructions that bury the action.
 
-## Program
+## Why this shape wins this ranking
 
-`main.ts` (Node 22, standard library only) copies `POST.json` from the
-repository root to `/output` — that is all it has to do; the house reads
-the post itself from X. Deterministic, no network, no clock.
-`POST.json` holds a placeholder address until Joni posts: after he
-posts, replace it with the real post URL
-(`https://x.com/ci3hu1/status/<digits>`), commit, and submit. The post
-must stay up and public until the results are out (result due 11 Dec
-2026).
+- Replies come from the quote format: people respond to the quoted
+  announcement as much as to the post itself.
+- Reposts and quotes come from the photo + the invitation: the post is
+  easy to pass on with a one-line reaction of the reader's own.
+- The code and the sponsor link turn attention into a trackable action,
+  which is the point of the promotion even beyond the bounty ranking.
 
-## Rules that decide validity
+## What was tried and dropped
 
-- One post per entrant, entered once (quota: total max 1, day cap 1).
-- The post must quote or link make.fun's post — a reply does not count.
-- Bought, botted, or self/coordinated engagement disqualifies — no
-  engagement farming, only honest posting.
-- Free entry (entry fee none), escrowed $250 on Solana.
+- A plain text-only post with only a link: no visual hook, nothing to
+  repost with a reaction — dropped in favour of the quoted post + photo.
+- Chasing views/likes: they do not count here, so no effort is spent on
+  them; every choice above is aimed at replies, reposts, and quotes.
+
+## Expected outcome
+
+A post that earns its rank from conversation (replies, reposts, quotes)
+around a clear, single action — try making your own bounty with code
+`cc7tcnw6` — rather than from raw reach.

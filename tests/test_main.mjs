@@ -1,65 +1,117 @@
-/**
- * Tests for the post-x entry.
- *
- * Node's built-in test runner, standard library only. Runs main.ts with
- * MAKEFUN_OUTPUT_DIR pointed at a temp dir and asserts:
- * - it exits 0
- * - /output POST.json is written, byte-identical to the repo's POST.json
- * - the file is readable by all (0644)
- * - two runs are byte-identical (deterministic)
- */
-
-import { test } from "node:test";
+// Tests for main.ts — run with: node --test tests/test_main.mjs
+// The program's only job is to copy POST.json byte-for-byte to the
+// grader location with mode 0644, so the tests check exactly that:
+// exact bytes, the 0644 mode, determinism across runs, the POST.json
+// shape (an X URL), and a non-zero exit when the source is missing.
+import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, statSync } from "node:fs";
+import {
+  chmodSync,
+  copyFileSync,
+  existsSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const REPO = dirname(dirname(fileURLToPath(import.meta.url)));
-const MAIN_TS = join(REPO, "main.ts");
-const POST_JSON = join(REPO, "POST.json");
+const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
+const mainPath = join(repoRoot, "main.ts");
+const postPath = join(repoRoot, "POST.json");
 
-function runMain(outDir) {
-  return spawnSync("node", [MAIN_TS], {
-    env: { ...process.env, MAKEFUN_OUTPUT_DIR: outDir },
-    encoding: "utf-8",
-    timeout: 30000,
+function tempDir() {
+  return mkdtempSync(join(tmpdir(), "make-your-own-bounty-"));
+}
+
+function runMain(env = {}, cwd = repoRoot) {
+  return spawnSync(process.execPath, [mainPath], {
+    cwd,
+    env: { ...process.env, ...env },
+    encoding: "utf8",
   });
 }
 
-test("main.ts copies POST.json to the output dir", () => {
-  const out = mkdtempSync(join(tmpdir(), "post-x-"));
-  const result = runMain(out);
-  assert.equal(result.status, 0, result.stderr);
-  const copied = readFileSync(join(out, "POST.json"));
-  const original = readFileSync(POST_JSON);
-  assert.deepEqual(copied, original);
-});
-
-test("copied POST.json is readable by all (0644)", () => {
-  const out = mkdtempSync(join(tmpdir(), "post-x-"));
-  const result = runMain(out);
-  assert.equal(result.status, 0, result.stderr);
-  const mode = statSync(join(out, "POST.json")).mode & 0o777;
-  assert.equal(mode, 0o644);
-});
-
-test("two runs are byte-identical", () => {
-  const out1 = mkdtempSync(join(tmpdir(), "post-x-"));
-  const out2 = mkdtempSync(join(tmpdir(), "post-x-"));
-  assert.equal(runMain(out1).status, 0);
-  assert.equal(runMain(out2).status, 0);
-  assert.deepEqual(
-    readFileSync(join(out1, "POST.json")),
-    readFileSync(join(out2, "POST.json")),
+test("POST.json holds an X post URL", () => {
+  const parsed = JSON.parse(readFileSync(postPath, "utf8"));
+  assert.equal(typeof parsed.url, "string");
+  assert.ok(
+    parsed.url.startsWith("https://x.com/"),
+    `url must start with https://x.com/, got ${parsed.url}`,
   );
 });
 
-test("POST.json is a JSON object with a url string", () => {
-  const parsed = JSON.parse(readFileSync(POST_JSON, "utf-8"));
-  assert.equal(typeof parsed, "object");
-  assert.equal(typeof parsed.url, "string");
-  assert.ok(parsed.url.startsWith("https://x.com/"));
+test("copy is byte-exact with mode 0644 under $MAKEFUN_OUTPUT_DIR", () => {
+  const outDir = tempDir();
+  try {
+    const result = runMain({ MAKEFUN_OUTPUT_DIR: outDir });
+    assert.equal(result.status, 0, result.stderr);
+    const target = join(outDir, "entry.json");
+    assert.ok(existsSync(target), "entry.json should exist");
+    assert.deepEqual(readFileSync(target), readFileSync(postPath));
+    assert.equal(statSync(target).mode & 0o777, 0o644);
+  } finally {
+    rmSync(outDir, { recursive: true, force: true });
+  }
+});
+
+test("repeat runs are deterministic", () => {
+  const outDir = tempDir();
+  try {
+    const target = join(outDir, "entry.json");
+    assert.equal(runMain({ MAKEFUN_OUTPUT_DIR: outDir }).status, 0);
+    const first = readFileSync(target);
+    assert.equal(runMain({ MAKEFUN_OUTPUT_DIR: outDir }).status, 0);
+    const second = readFileSync(target);
+    assert.deepEqual(second, first);
+    assert.deepEqual(second, readFileSync(postPath));
+  } finally {
+    rmSync(outDir, { recursive: true, force: true });
+  }
+});
+
+test("falls back when no output dir is set", () => {
+  const workDir = tempDir();
+  try {
+    const env = { ...process.env };
+    delete env.MAKEFUN_OUTPUT_DIR;
+    const result = spawnSync(process.execPath, [mainPath], {
+      cwd: workDir,
+      env,
+      encoding: "utf8",
+    });
+    assert.equal(result.status, 0, result.stderr);
+    // Priority 2: /output exists as a directory on this machine, so the
+    // copy lands there; otherwise it lands in ./output.json in the cwd.
+    const target = existsSync("/output")
+      ? "/output/POST.json"
+      : join(workDir, "output.json");
+    assert.ok(existsSync(target), `${target} should exist`);
+    assert.deepEqual(readFileSync(target), readFileSync(postPath));
+    assert.equal(statSync(target).mode & 0o777, 0o644);
+  } finally {
+    rmSync(workDir, { recursive: true, force: true });
+    if (existsSync("/output/POST.json")) rmSync("/output/POST.json");
+  }
+});
+
+test("exits non-zero when POST.json is missing", () => {
+  const workDir = tempDir();
+  try {
+    copyFileSync(mainPath, join(workDir, "main.ts"));
+    // No POST.json in the temp dir, so the copy must fail loudly.
+    const result = spawnSync(process.execPath, [join(workDir, "main.ts")], {
+      cwd: workDir,
+      env: { ...process.env, MAKEFUN_OUTPUT_DIR: workDir },
+      encoding: "utf8",
+    });
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /failed/i);
+  } finally {
+    rmSync(workDir, { recursive: true, force: true });
+  }
 });

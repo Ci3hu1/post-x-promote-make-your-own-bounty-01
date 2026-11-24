@@ -1,1 +1,15 @@
-{"name":"post-x-promote-make-your-own-bounty-01","private":true,"type":"module"}
+{
+  "name": "post-x-promote-make-your-own-bounty-01",
+  "version": "1.0.0",
+  "description": "make.fun bounty entry: one X post promoting Make Your Own Bounty, delivered to the grader as POST.json",
+  "type": "module",
+  "main": "main.ts",
+  "scripts": {
+    "test": "node --test tests/test_main.mjs",
+    "start": "node main.ts"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT"
+}
