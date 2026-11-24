@@ -99,6 +99,45 @@ test("falls back when no output dir is set", () => {
   }
 });
 
+test("exits non-zero when POST.json is not valid JSON", () => {
+  const workDir = tempDir();
+  try {
+    copyFileSync(mainPath, join(workDir, "main.ts"));
+    writeFileSync(join(workDir, "POST.json"), "{ not json");
+    const result = spawnSync(process.execPath, [join(workDir, "main.ts")], {
+      cwd: workDir,
+      env: { ...process.env, MAKEFUN_OUTPUT_DIR: workDir },
+      encoding: "utf8",
+    });
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /POST\.json is not valid JSON/);
+    assert.ok(!existsSync(join(workDir, "entry.json")), "no output on invalid input");
+  } finally {
+    rmSync(workDir, { recursive: true, force: true });
+  }
+});
+
+test("exits non-zero when POST.json url is not an X URL", () => {
+  const workDir = tempDir();
+  try {
+    copyFileSync(mainPath, join(workDir, "main.ts"));
+    writeFileSync(
+      join(workDir, "POST.json"),
+      JSON.stringify({ url: "https://example.com/some-post" }),
+    );
+    const result = spawnSync(process.execPath, [join(workDir, "main.ts")], {
+      cwd: workDir,
+      env: { ...process.env, MAKEFUN_OUTPUT_DIR: workDir },
+      encoding: "utf8",
+    });
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /must start with https:\/\/x\.com\//);
+    assert.ok(!existsSync(join(workDir, "entry.json")), "no output on bad url");
+  } finally {
+    rmSync(workDir, { recursive: true, force: true });
+  }
+});
+
 test("exits non-zero when POST.json is missing", () => {
   const workDir = tempDir();
   try {
